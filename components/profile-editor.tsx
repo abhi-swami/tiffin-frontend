@@ -117,7 +117,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                   <img
                     src={previewUrl}
                     alt="Profile"
-                    className="h-20 w-20 rounded-[16px] object-cover shadow-[0_20px_40px_-30px_rgba(14,74,88,0.8)]"
+                    className="h-20 w-20 rounded-[16px] object-contain shadow-[0_20px_40px_-30px_rgba(14,74,88,0.8)]"
                   />
                 ) : (
                   <div className="flex h-20 w-20 items-center justify-center rounded-[16px] bg-white/18 text-[12px] font-extrabold text-white shadow-[0_20px_40px_-30px_rgba(14,74,88,0.8)]">

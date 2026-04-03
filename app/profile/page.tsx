@@ -6,7 +6,8 @@ import { getProfile } from "@/lib/profile";
 export default async function ProfilePage() {
   await connection();
   const response = await getProfile();
-  const profile = response.profile[0] ?? null;
+  console.log("Profile response:", response);
+  const profile = response.profile ?? null;
 
   return (
     <section className="page-shell">

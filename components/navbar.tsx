@@ -68,8 +68,8 @@ export function Navbar() {
     <>
       <header className="sticky top-0 z-40 border-b border-white/45 bg-[rgba(255,251,246,0.72)] backdrop-blur-2xl">
         <div className="page-shell pb-2">
-          <div className="app-panel px-2 py-2">
-            <div className="flex items-center justify-between gap-2">
+          <div className="app-panel px-2 py-2 md:px-3">
+            <div className="flex items-center justify-between gap-2 md:hidden">
               <Link href="/" className="flex min-w-0 items-center gap-2">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] bg-brand-gradient text-[10px] font-extrabold tracking-[0.24em] text-white shadow-[0_18px_32px_-24px_rgba(21,105,118,0.95)]">
                   TF
@@ -79,33 +79,28 @@ export function Navbar() {
                     Tiffin Drift
                   </span>
                   <span className="block truncate text-[9px] leading-[1.1] text-slate-500">
+                  Pocket-sized ordering
+                  </span>
+                </span>
+              </Link>
+            </div>
+
+            <div className="mt-2 hidden items-center gap-3 md:flex">
+              <Link href="/" className="flex min-w-0 items-center gap-3 pr-3">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[16px] bg-brand-gradient text-[12px] font-extrabold tracking-[0.24em] text-white shadow-[0_18px_32px_-24px_rgba(21,105,118,0.95)]">
+                  TF
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-[17px] font-extrabold tracking-[-0.04em] text-slate-950">
+                    Tiffin Drift
+                  </span>
+                  <span className="block truncate text-[13px] leading-[1.15] text-slate-500">
                     Pocket-sized ordering
                   </span>
                 </span>
               </Link>
 
-              <div className="hidden items-center gap-2 md:flex">
-                <div className="inline-flex items-center gap-1 rounded-full bg-[color:var(--surface-strong)] px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-strong)]">
-                  <Sparkles className="size-3" />
-                  Mobile tuned
-                </div>
-
-                {user?.id ? (
-                  <button
-                    type="button"
-                    onClick={() => void handleLogout()}
-                    disabled={isLoggingOut}
-                    className="inline-flex h-8 items-center gap-1 rounded-full border border-[color:var(--line)] bg-white px-3 text-[10px] font-semibold text-slate-700 transition hover:border-[color:var(--brand)] hover:text-[color:var(--brand-strong)] disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    <LogOut className="size-3.5" />
-                    {isLoggingOut ? "Logging out" : "Logout"}
-                  </button>
-                ) : null}
-              </div>
-            </div>
-
-            <div className="mt-2 hidden items-center justify-between gap-2 md:flex">
-              <nav className="flex items-center gap-1 rounded-full border border-[color:var(--line)] bg-white/85 p-1">
+              <nav className="flex flex-1 items-center gap-1 rounded-full border border-[color:var(--line)] bg-white/85 p-1">
                 {navLinks.map((link) => {
                   const isActive = pathname === link.href;
 
@@ -113,26 +108,45 @@ export function Navbar() {
                     <Link
                       key={link.href}
                       href={link.href}
-                      className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-[10px] font-semibold transition ${
+                      className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-[13px] font-semibold transition ${
                         isActive
                           ? "bg-[color:var(--brand-strong)] text-white"
                           : "text-slate-600 hover:bg-[color:var(--brand-soft)] hover:text-[color:var(--brand-strong)]"
                       }`}
                     >
-                      <link.icon className="size-3.5" />
+                      <link.icon className="size-4" />
                       {link.label}
                     </Link>
                   );
                 })}
               </nav>
 
-              <Link
-                href="/menu"
-                className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-600 transition hover:text-[color:var(--brand-strong)]"
-              >
-                Quick order
-                <ChevronRight className="size-3.5" />
-              </Link>
+              <div className="ml-auto flex items-center gap-3">
+                <div className="inline-flex items-center gap-1 rounded-full bg-[color:var(--surface-strong)] px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-strong)]">
+                  <Sparkles className="size-3.5" />
+                  Mobile tuned
+                </div>
+
+                <Link
+                  href="/menu"
+                  className="inline-flex items-center gap-1 text-[13px] font-semibold text-slate-600 transition hover:text-[color:var(--brand-strong)]"
+                >
+                  Quick order
+                  <ChevronRight className="size-4" />
+                </Link>
+
+                {user?.id ? (
+                  <button
+                    type="button"
+                    onClick={() => void handleLogout()}
+                    disabled={isLoggingOut}
+                    className="inline-flex h-10 items-center gap-1 rounded-full border border-[color:var(--line)] bg-white px-4 text-[12px] font-semibold text-slate-700 transition hover:border-[color:var(--brand)] hover:text-[color:var(--brand-strong)] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <LogOut className="size-4" />
+                    {isLoggingOut ? "Logging out" : "Logout"}
+                  </button>
+                ) : null}
+              </div>
             </div>
           </div>
 
