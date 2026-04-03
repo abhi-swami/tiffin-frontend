@@ -1,9 +1,10 @@
 "use client";
 
-import { ChangeEvent, useMemo, useState } from "react";
+import type { ChangeEvent, ReactNode } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { CalendarDays, Camera, Phone, Save, UserCircle2 } from "lucide-react";
+import { CalendarDays, Camera, Phone, Save } from "lucide-react";
 import { useAuth } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/axios";
@@ -105,127 +106,128 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
   }
 
   return (
-    <article className="overflow-hidden rounded-[2.25rem] border border-white/70 bg-white/92 shadow-[0_45px_120px_-65px_rgba(15,23,42,0.75)] backdrop-blur">
-      <div className="relative overflow-hidden bg-[linear-gradient(145deg,rgba(255,247,237,0.98),rgba(255,255,255,0.9))] px-6 py-8 sm:px-8 sm:py-10">
-        <div className="absolute right-0 top-0 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(238,108,55,0.18),transparent_68%)] blur-3xl" />
+    <article className="app-panel hero-panel overflow-hidden">
+      <div className="hero-grid">
+        <div className="mesh-card p-3">
+          <div className="relative flex h-full flex-col gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <div className="relative">
+                {previewUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={previewUrl}
+                    alt="Profile"
+                    className="h-20 w-20 rounded-[16px] object-cover shadow-[0_20px_40px_-30px_rgba(14,74,88,0.8)]"
+                  />
+                ) : (
+                  <div className="flex h-20 w-20 items-center justify-center rounded-[16px] bg-white/18 text-[12px] font-extrabold text-white shadow-[0_20px_40px_-30px_rgba(14,74,88,0.8)]">
+                    {avatarLabel}
+                  </div>
+                )}
 
-        <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-            <div className="relative">
-              {previewUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={previewUrl}
-                  alt="Profile"
-                  className="size-24 rounded-[2rem] object-cover shadow-[0_22px_50px_-30px_rgba(238,108,55,0.65)]"
-                />
-              ) : (
-                <div className="flex size-24 items-center justify-center rounded-[2rem] bg-[color:var(--brand-soft)] text-3xl font-semibold text-[color:var(--brand-deep)] shadow-[0_22px_50px_-30px_rgba(238,108,55,0.65)]">
-                  {avatarLabel}
+                <label className="absolute -bottom-2 -right-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-[12px] bg-white text-[color:var(--brand-strong)] shadow-[0_16px_24px_-18px_rgba(255,255,255,0.85)] transition hover:bg-[color:var(--brand-soft)]">
+                  <Camera className="size-3.5" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                </label>
+              </div>
+
+              <div className="min-w-0">
+                <p className="eyebrow text-white/72">Personal account</p>
+                <h2 className="mt-1 text-[12px] font-extrabold tracking-[-0.03em] text-white">
+                  {[firstName, lastName].filter(Boolean).join(" ") || "Tiffin user"}
+                </h2>
+                <p className="tiny-copy mt-1 text-white/82">
+                  Keep your details current. Your phone number stays locked.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-auto space-y-2">
+              <div className="rounded-[14px] bg-white/12 px-3 py-2 backdrop-blur-sm">
+                <div className="flex items-center gap-2 text-[10px] text-white/88">
+                  <Phone className="size-3.5" />
+                  {profile.phone}
                 </div>
-              )}
-
-              <label className="absolute -bottom-2 -right-2 flex size-10 cursor-pointer items-center justify-center rounded-2xl bg-[color:var(--brand)] text-white shadow-[0_18px_40px_-24px_rgba(238,108,55,0.75)] transition hover:bg-[color:var(--brand-deep)]">
-                <Camera className="size-4" />
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageChange}
-                />
-              </label>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium uppercase tracking-[0.24em] text-[color:var(--brand-deep)]">
-                Personal account
-              </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-                {[firstName, lastName].filter(Boolean).join(" ") || "Tiffin user"}
-              </h2>
-              <p className="mt-3 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">
-                Update your personal details here. Your mobile number stays
-                locked for security.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-3">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.55)]">
-              <Phone className="size-4 text-[color:var(--brand)]" />
-              {profile.phone}
-            </div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-[0_18px_40px_-32px_rgba(15,23,42,0.55)]">
-              <CalendarDays className="size-4 text-[color:var(--brand)]" />
-              Joined {formatDate(profile.created_at)}
+              </div>
+              <div className="rounded-[14px] bg-white/12 px-3 py-2 backdrop-blur-sm">
+                <div className="flex items-center gap-2 text-[10px] text-white/88">
+                  <CalendarDays className="size-3.5" />
+                  Joined {formatDate(profile.created_at)}
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
+        <form onSubmit={handleSubmit} className="space-y-2">
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Field label="First name">
+              <input
+                value={firstName}
+                onChange={(event) => setFirstName(event.target.value)}
+                placeholder="First name"
+                className="w-full rounded-[14px] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2.5 text-[11px] text-slate-900 outline-none transition focus:border-[color:var(--brand-strong)]"
+              />
+            </Field>
+
+            <Field label="Last name">
+              <input
+                value={lastName}
+                onChange={(event) => setLastName(event.target.value)}
+                placeholder="Last name"
+                className="w-full rounded-[14px] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2.5 text-[11px] text-slate-900 outline-none transition focus:border-[color:var(--brand-strong)]"
+              />
+            </Field>
+
+            <Field label="Email">
+              <input
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="name@example.com"
+                className="w-full rounded-[14px] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2.5 text-[11px] text-slate-900 outline-none transition focus:border-[color:var(--brand-strong)]"
+              />
+            </Field>
+
+            <Field label="Mobile number">
+              <div className="flex items-center rounded-[14px] border border-[color:var(--line)] bg-slate-100 px-3 py-2.5 text-[11px] text-slate-500">
+                {profile.phone}
+              </div>
+            </Field>
+          </div>
+
+          {feedback ? (
+            <p
+              className={`rounded-[14px] px-3 py-2 text-[10px] leading-[1.15] ${
+                feedbackTone === "success"
+                  ? "bg-emerald-50 text-emerald-700"
+                  : feedbackTone === "error"
+                    ? "bg-rose-50 text-rose-700"
+                    : "bg-slate-100 text-slate-600"
+              }`}
+            >
+              {feedback}
+            </p>
+          ) : null}
+
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              size="lg"
+              disabled={isSubmitting}
+              className="h-9 rounded-[14px] bg-[color:var(--brand-strong)] px-4 text-[10px] text-white hover:bg-[color:var(--brand)]"
+            >
+              <Save className="size-3.5" />
+              {isSubmitting ? "Saving" : "Save changes"}
+            </Button>
+          </div>
+        </form>
       </div>
-
-      <form onSubmit={handleSubmit} className="space-y-6 p-6 sm:p-8">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="First name">
-            <input
-              value={firstName}
-              onChange={(event) => setFirstName(event.target.value)}
-              placeholder="First name"
-              className="w-full rounded-[1.5rem] border border-[color:var(--border-soft)] bg-[color:var(--surface)] px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[color:var(--brand)]"
-            />
-          </Field>
-
-          <Field label="Last name">
-            <input
-              value={lastName}
-              onChange={(event) => setLastName(event.target.value)}
-              placeholder="Last name"
-              className="w-full rounded-[1.5rem] border border-[color:var(--border-soft)] bg-[color:var(--surface)] px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[color:var(--brand)]"
-            />
-          </Field>
-
-          <Field label="Email">
-            <input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="name@example.com"
-              className="w-full rounded-[1.5rem] border border-[color:var(--border-soft)] bg-[color:var(--surface)] px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-[color:var(--brand)]"
-            />
-          </Field>
-
-          <Field label="Mobile number">
-            <div className="flex items-center rounded-[1.5rem] border border-[color:var(--border-soft)] bg-slate-100 px-4 py-3 text-sm text-slate-500">
-              {profile.phone}
-            </div>
-          </Field>
-        </div>
-
-        {feedback ? (
-          <p
-            className={`rounded-[1.5rem] px-4 py-3 text-sm leading-7 ${
-              feedbackTone === "success"
-                ? "bg-emerald-50 text-emerald-700"
-                : feedbackTone === "error"
-                  ? "bg-rose-50 text-rose-700"
-                  : "bg-slate-100 text-slate-600"
-            }`}
-          >
-            {feedback}
-          </p>
-        ) : null}
-
-        <div className="flex justify-end">
-          <Button
-            type="submit"
-            size="lg"
-            disabled={isSubmitting}
-            className="h-12 rounded-2xl bg-[color:var(--brand)] px-6 text-white hover:bg-[color:var(--brand-deep)]"
-          >
-            <Save className="size-4" />
-            {isSubmitting ? "Saving profile..." : "Save changes"}
-          </Button>
-        </div>
-      </form>
     </article>
   );
 }
@@ -235,13 +237,11 @@ function Field({
   children,
 }: {
   label: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <label className="block space-y-2">
-      <span className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-        {label}
-      </span>
+    <label className="block space-y-1.5">
+      <span className="eyebrow">{label}</span>
       {children}
     </label>
   );

@@ -58,29 +58,36 @@ export function PlaceOrderButton({ tiffinId }: PlaceOrderButtonProps) {
   }
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="space-y-1">
+        <p className="eyebrow text-[color:var(--brand-strong)]">Ready to order</p>
+        <p className="tiny-copy text-slate-600">
+          Place today&apos;s tiffin in one quick step.
+        </p>
+      </div>
+
       <Button
         type="button"
         size="lg"
         disabled={!tiffinId || isSubmitting}
-        className="h-12 rounded-2xl bg-[color:var(--brand)] px-8 text-white hover:bg-[color:var(--brand-deep)]"
+        className="h-9 rounded-[14px] bg-[color:var(--brand-strong)] px-4 text-[10px] text-white hover:bg-[color:var(--brand)]"
         onClick={handlePlaceOrder}
       >
         {isSubmitting ? (
           <>
-            <LoaderCircle className="size-4 animate-spin" />
-            Placing order
+            <LoaderCircle className="size-3.5 animate-spin" />
+            Placing
           </>
         ) : (
           <>
             Place order
-            <ArrowRight className="size-4" />
+            <ArrowRight className="size-3.5" />
           </>
         )}
       </Button>
 
       {errorMessage ? (
-        <p className="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-700">
+        <p className="rounded-[14px] bg-rose-50 px-3 py-2 text-[10px] leading-[1.15] text-rose-700 sm:ml-auto">
           {errorMessage}
         </p>
       ) : null}

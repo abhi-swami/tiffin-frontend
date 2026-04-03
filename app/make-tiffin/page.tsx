@@ -189,38 +189,37 @@ export default function MakeTiffinPage() {
 
   const description =
     mode === "edit"
-      ? "Existing items are already selected. You can add or remove dishes, then save the updated tiffin."
+      ? "Existing items are already selected. Add or remove dishes, then save the update."
       : mode === "view"
-        ? "A tiffin already exists for today. Review the selected dishes or switch to edit mode to modify them."
-        : "No tiffin exists for today yet. Select dishes from the menu and create one for today.";
+        ? "A tiffin already exists for today. Review the selected dishes or switch to edit mode."
+        : "No tiffin exists for today yet. Select dishes from the menu and create one.";
 
   return (
-    <section className="relative isolate overflow-hidden px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
-      <div className="absolute inset-x-0 top-0 -z-10 mx-auto h-80 max-w-5xl rounded-full bg-[radial-gradient(circle,rgba(238,108,55,0.22),transparent_62%)] blur-3xl" />
-
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 lg:gap-8">
-        <div className="space-y-4">
-          <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[color:var(--brand-soft)] px-4 py-2 text-sm font-semibold text-[color:var(--brand-deep)]">
-            <ShieldCheck className="size-4" />
-            Admin panel
-          </span>
-
-          <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-            <div>
-              <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
-                {title}
-              </h1>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-                {description}
-              </p>
+    <section className="page-shell">
+      <div className="page-stack">
+        <div className="app-panel hero-panel">
+          <div className="hero-grid">
+            <div className="space-y-2">
+              <span className="section-kicker">
+                <ShieldCheck className="size-3" />
+                Admin panel
+              </span>
+              <h1 className="hero-title text-slate-950">{title}</h1>
+              <p className="hero-copy max-w-2xl">{description}</p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 xl:min-w-[28rem]">
-              <div className="rounded-2xl border border-white/70 bg-white/80 px-4 py-4 text-sm text-slate-600 shadow-[0_24px_60px_-45px_rgba(15,23,42,0.7)]">
-                {isLoading ? "Loading items..." : `${items.length} items visible`}
+            <div className="stat-grid">
+              <div className="soft-panel">
+                <p className="eyebrow">Visible items</p>
+                <h2 className="mt-1 text-[12px] font-extrabold text-slate-950">
+                  {isLoading ? "..." : items.length}
+                </h2>
               </div>
-              <div className="rounded-2xl border border-white/70 bg-white/80 px-4 py-4 text-sm text-slate-600 shadow-[0_24px_60px_-45px_rgba(15,23,42,0.7)]">
-                {selectedIds.length} selected
+              <div className="soft-panel">
+                <p className="eyebrow">Selected</p>
+                <h2 className="mt-1 text-[12px] font-extrabold text-slate-950">
+                  {selectedIds.length}
+                </h2>
               </div>
             </div>
           </div>
@@ -228,64 +227,62 @@ export default function MakeTiffinPage() {
 
         {feedback ? (
           <div
-            className={`rounded-[1.5rem] border px-4 py-4 shadow-[0_24px_60px_-45px_rgba(15,23,42,0.45)] ${
+            className={`app-panel ${
               feedbackTone === "success"
                 ? "border-emerald-200 bg-emerald-50/90 text-emerald-800"
                 : feedbackTone === "error"
                   ? "border-rose-200 bg-rose-50/90 text-rose-700"
-                  : "border-white/70 bg-white/80 text-slate-700"
+                  : "text-slate-700"
             }`}
           >
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-2">
               {feedbackTone === "success" ? (
-                <CheckCircle2 className="mt-0.5 size-5 shrink-0" />
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0" />
               ) : feedbackTone === "error" ? (
-                <AlertCircle className="mt-0.5 size-5 shrink-0" />
+                <AlertCircle className="mt-0.5 size-4 shrink-0" />
               ) : null}
-              <p className="text-sm leading-7">{feedback}</p>
+              <p className="tiny-copy">{feedback}</p>
             </div>
           </div>
         ) : null}
 
         {error ? (
-          <div className="rounded-[2rem] border border-rose-200 bg-rose-50/90 p-6 shadow-[0_35px_90px_-55px_rgba(15,23,42,0.45)] sm:p-8">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="mt-0.5 size-5 shrink-0 text-rose-600" />
+          <div className="app-panel border-rose-200 bg-rose-50/90">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="mt-0.5 size-4 shrink-0 text-rose-600" />
               <div>
-                <h2 className="text-lg font-semibold text-slate-950 sm:text-xl">
+                <h2 className="text-[12px] font-extrabold text-slate-950">
                   Could not load admin tiffin data
                 </h2>
-                <p className="mt-2 text-sm leading-7 text-slate-700">{error}</p>
+                <p className="tiny-copy mt-1 text-slate-700">{error}</p>
               </div>
             </div>
           </div>
         ) : null}
 
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_21rem] xl:items-start">
-          <div className="space-y-4">
-            <div className="flex flex-col gap-3 rounded-[1.75rem] border border-white/70 bg-white/85 p-4 shadow-[0_24px_60px_-45px_rgba(15,23,42,0.45)] sm:flex-row sm:items-center sm:justify-between">
+        <div className="grid gap-2 xl:grid-cols-[minmax(0,1fr)_20rem]">
+          <div className="space-y-2">
+            <div className="app-panel flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-slate-950">
+                <h2 className="text-[12px] font-extrabold text-slate-950">
                   {mode === "view" ? "Current tiffin items" : "Available dishes"}
                 </h2>
-                <p className="text-sm leading-6 text-slate-600">
+                <p className="tiny-copy mt-1 text-slate-600">
                   {mode === "view"
                     ? "These dishes are already part of today's tiffin."
-                    : "Select or deselect dishes to control what goes into today's tiffin."}
+                    : "Tap any card to add or remove it from the tiffin."}
                 </p>
               </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row">
+              <div className="flex flex-col gap-2 sm:flex-row">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => void initializePage()}
                   disabled={isLoading || isEditLoading}
-                  className="h-11 rounded-2xl border-[color:var(--border-soft)] bg-white/80 px-4"
+                  className="h-9 rounded-[14px] border-[color:var(--line)] bg-white/80 px-3 text-[10px]"
                 >
-                  <RefreshCcw
-                    className={`size-4 ${isLoading ? "animate-spin" : ""}`}
-                  />
+                  <RefreshCcw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
                   Refresh
                 </Button>
 
@@ -294,40 +291,39 @@ export default function MakeTiffinPage() {
                     type="button"
                     onClick={() => void handleEditTiffin()}
                     disabled={isEditLoading}
-                    className="h-11 rounded-2xl bg-[color:var(--brand)] px-4 text-white hover:bg-[color:var(--brand-deep)]"
+                    className="h-9 rounded-[14px] bg-[color:var(--brand-strong)] px-3 text-[10px] text-white hover:bg-[color:var(--brand)]"
                   >
-                    <PencilLine className="size-4" />
-                    {isEditLoading ? "Opening edit..." : "Edit tiffin"}
+                    <PencilLine className="size-3.5" />
+                    {isEditLoading ? "Opening..." : "Edit tiffin"}
                   </Button>
                 ) : null}
               </div>
             </div>
 
             {isLoading ? (
-              <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
+              <div className="menu-grid">
                 {Array.from({ length: 6 }).map((_, index) => (
                   <div
                     key={index}
-                    className="h-52 animate-pulse rounded-[1.75rem] border border-white/70 bg-white/70 shadow-[0_35px_90px_-55px_rgba(15,23,42,0.45)]"
+                    className="h-36 animate-pulse rounded-[var(--panel-radius)] border border-white/65 bg-white/60"
                   />
                 ))}
               </div>
             ) : null}
 
             {!isLoading && !error && items.length === 0 ? (
-              <div className="rounded-[2rem] border border-dashed border-[color:var(--border-soft)] bg-white/80 px-6 py-12 text-center shadow-[0_35px_90px_-55px_rgba(15,23,42,0.45)] backdrop-blur">
-                <p className="text-lg font-semibold text-slate-950">
+              <div className="app-panel text-center">
+                <h2 className="text-[12px] font-extrabold text-slate-950">
                   No menu items are available right now.
-                </p>
-                <p className="mt-3 text-sm leading-7 text-slate-600 sm:text-base">
-                  Once the backend returns items, this admin page will let you
-                  select and submit them.
+                </h2>
+                <p className="tiny-copy mt-1 text-slate-600">
+                  Once the backend returns items, this page will let you select and submit them.
                 </p>
               </div>
             ) : null}
 
             {!isLoading && !error && items.length > 0 ? (
-              <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-3">
+              <div className="menu-grid">
                 {items.map((item) => {
                   const isSelected = selectedIds.includes(item.id);
 
@@ -337,42 +333,43 @@ export default function MakeTiffinPage() {
                       type="button"
                       onClick={() => toggleSelection(item.id)}
                       disabled={mode === "view"}
-                      className={`flex h-full flex-col rounded-[1.75rem] border p-5 text-left shadow-[0_35px_90px_-55px_rgba(15,23,42,0.55)] transition ${
+                      className={`app-panel flex h-full flex-col gap-2 text-left transition ${
                         isSelected
-                          ? "border-[color:var(--brand)] bg-orange-50/90 ring-2 ring-[color:var(--brand)]/20"
-                          : "border-white/70 bg-white/90 hover:border-[color:var(--brand-soft)] hover:bg-white"
+                          ? "border-[color:var(--brand)] bg-[color:var(--brand-soft)]/35 ring-2 ring-[color:var(--brand)]/18"
+                          : "hover:border-[color:var(--brand-soft)] hover:bg-white/90"
                       } ${mode === "view" ? "cursor-default" : ""}`}
                     >
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[color:var(--brand-soft)] text-[color:var(--brand-deep)]">
-                          <Soup className="size-5" />
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-start gap-2">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[12px] bg-[color:var(--brand-soft)] text-[color:var(--brand-strong)]">
+                            <Soup className="size-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="truncate text-[11px] font-extrabold text-slate-950">
+                              {item.name}
+                            </h3>
+                            <p className="eyebrow mt-1">Item #{item.id}</p>
+                          </div>
                         </div>
+
                         <span
-                          className={`rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] ${
+                          className={`rounded-full px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.16em] ${
                             isSelected
-                              ? "bg-[color:var(--brand)] text-white"
-                              : "bg-slate-100 text-slate-600"
+                              ? "bg-[color:var(--brand-strong)] text-white"
+                              : "bg-[color:var(--surface)] text-slate-600"
                           }`}
                         >
                           {isSelected ? "Selected" : "Available"}
                         </span>
                       </div>
 
-                      <div className="mt-4 space-y-3">
-                        <h3 className="text-lg font-semibold text-slate-950">
-                          {item.name}
-                        </h3>
-                        <p className="text-sm leading-7 text-slate-600">
-                          {item.description || "No description provided."}
-                        </p>
-                      </div>
+                      <p className="tiny-copy text-slate-600">
+                        {item.description || "No description provided."}
+                      </p>
 
-                      <div className="mt-5 flex flex-wrap items-center gap-2">
-                        <span className="rounded-full bg-white px-3 py-1 text-sm font-medium text-slate-700">
+                      <div className="mt-auto flex flex-wrap gap-2">
+                        <span className="rounded-full bg-[color:var(--surface)] px-2 py-1 text-[9px] font-semibold text-slate-700">
                           {item.price === null ? "Included" : `Rs. ${item.price}`}
-                        </span>
-                        <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
-                          Item #{item.id}
                         </span>
                       </div>
                     </button>
@@ -383,52 +380,41 @@ export default function MakeTiffinPage() {
           </div>
 
           <aside className="xl:sticky xl:top-24">
-            <div className="rounded-[2rem] border border-white/70 bg-white/90 p-5 shadow-[0_35px_90px_-55px_rgba(15,23,42,0.7)] backdrop-blur sm:p-6">
-              <h2 className="text-xl font-semibold text-slate-950">
-                Selected items
-              </h2>
-              <p className="mt-2 text-sm leading-7 text-slate-600">
+            <div className="app-panel">
+              <h2 className="text-[12px] font-extrabold text-slate-950">Selected items</h2>
+              <p className="tiny-copy mt-1 text-slate-600">
                 {mode === "edit"
                   ? "Review your updated selection, then save the modified tiffin."
                   : mode === "view"
                     ? "These are the items currently selected for today's tiffin."
-                    : "This summary is what will be sent to the backend when you create the tiffin."}
+                    : "This summary is what will be sent when you create the tiffin."}
               </p>
 
-              <div className="mt-5 grid grid-cols-2 gap-3">
-                <div className="rounded-[1.25rem] border border-[color:var(--border-soft)] bg-[color:var(--surface)] px-4 py-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                    Count
-                  </p>
-                  <p className="mt-2 text-lg font-semibold text-slate-950">
+              <div className="stat-grid mt-2">
+                <div className="soft-panel">
+                  <p className="eyebrow">Count</p>
+                  <h3 className="mt-1 text-[12px] font-extrabold text-slate-950">
                     {selectedIds.length}
-                  </p>
+                  </h3>
                 </div>
-                <div className="rounded-[1.25rem] border border-[color:var(--border-soft)] bg-[color:var(--surface)] px-4 py-3">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                    Pricing
-                  </p>
-                  <p className="mt-2 text-lg font-semibold text-slate-950">
+                <div className="soft-panel">
+                  <p className="eyebrow">Pricing</p>
+                  <h3 className="mt-1 text-[12px] font-extrabold text-slate-950">
                     {formatSelectionPrice(selectedItems)}
-                  </p>
+                  </h3>
                 </div>
               </div>
 
-              <div className="mt-5 max-h-72 space-y-3 overflow-auto pr-1">
+              <div className="mt-2 max-h-72 space-y-2 overflow-auto pr-1">
                 {selectedItems.length === 0 ? (
-                  <div className="rounded-[1.5rem] border border-dashed border-[color:var(--border-soft)] px-4 py-6 text-center text-sm leading-7 text-slate-500">
+                  <div className="rounded-[14px] border border-dashed border-[color:var(--line)] px-3 py-4 text-center text-[10px] leading-[1.15] text-slate-500">
                     No dishes selected yet.
                   </div>
                 ) : (
                   selectedItems.map((item) => (
-                    <div
-                      key={`summary-${item.id}`}
-                      className="rounded-[1.25rem] border border-[color:var(--border-soft)] bg-[color:var(--surface)] px-4 py-3"
-                    >
-                      <p className="font-semibold text-slate-900">{item.name}</p>
-                      <p className="mt-1 text-xs uppercase tracking-[0.18em] text-slate-400">
-                        Item #{item.id}
-                      </p>
+                    <div key={`summary-${item.id}`} className="soft-panel">
+                      <p className="text-[11px] font-bold text-slate-900">{item.name}</p>
+                      <p className="eyebrow mt-1">Item #{item.id}</p>
                     </div>
                   ))
                 )}
@@ -440,12 +426,12 @@ export default function MakeTiffinPage() {
                   size="lg"
                   onClick={() => void handleSubmit()}
                   disabled={selectedIds.length === 0 || isSubmitting}
-                  className="mt-6 h-12 w-full rounded-2xl bg-[color:var(--brand)] px-5 text-white hover:bg-[color:var(--brand-deep)]"
+                  className="mt-3 h-9 w-full rounded-[14px] bg-[color:var(--brand-strong)] px-4 text-[10px] text-white hover:bg-[color:var(--brand)]"
                 >
                   {isSubmitting
                     ? mode === "edit"
-                      ? "Modifying items..."
-                      : "Creating tiffin..."
+                      ? "Modifying..."
+                      : "Creating..."
                     : mode === "edit"
                       ? "Modify items"
                       : "Create tiffin"}

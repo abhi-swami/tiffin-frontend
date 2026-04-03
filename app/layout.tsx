@@ -1,22 +1,23 @@
 import type { Metadata } from "next";
+import { Manrope, Space_Mono } from "next/font/google";
 import { AuthProvider } from "@/components/auth-provider";
-import { Geist, Geist_Mono } from "next/font/google";
 import { Navbar } from "@/components/navbar";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const spaceMono = Space_Mono({
+  variable: "--font-space-mono",
+  weight: ["400", "700"],
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: "Tiffin",
-  description: "Fresh tiffin delivery with quick phone and OTP sign in.",
+  description: "Fresh tiffin delivery with a mobile-first ordering flow.",
 };
 
 export default function RootLayout({
@@ -27,7 +28,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${manrope.variable} ${spaceMono.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-background text-foreground">
         <AuthProvider>

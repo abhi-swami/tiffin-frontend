@@ -1,29 +1,49 @@
 'use client';
+
+import type { ComponentType } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import {
+  ChevronRight,
+  Home,
+  LogIn,
+  LogOut,
+  MenuSquare,
+  Package,
+  Sparkles,
+  UserRound,
+} from "lucide-react";
 import { useAuth } from "./auth-provider";
 
-const unautherised = [
-  { href: "/", label: "Home" },
-  { href: "/menu", label: "Menu" },
-  { href: "/login", label: "Login" },
+type NavLink = {
+  href: string;
+  label: string;
+  shortLabel: string;
+  icon: ComponentType<{ className?: string }>;
+};
+
+const guestLinks: NavLink[] = [
+  { href: "/", label: "Home", shortLabel: "Home", icon: Home },
+  { href: "/menu", label: "Menu", shortLabel: "Menu", icon: MenuSquare },
+  { href: "/login", label: "Login", shortLabel: "Login", icon: LogIn },
 ];
 
-const autherised = [
-  { href: "/", label: "Home" },
-  { href: "/menu", label: "Menu" },
-  { href: "/orders", label: "Orders" },
+const userLinks: NavLink[] = [
+  { href: "/", label: "Home", shortLabel: "Home", icon: Home },
+  { href: "/menu", label: "Menu", shortLabel: "Menu", icon: MenuSquare },
+  { href: "/orders", label: "Orders", shortLabel: "Orders", icon: Package },
+  { href: "/profile", label: "Profile", shortLabel: "Profile", icon: UserRound },
 ];
 
 export function Navbar() {
+  const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState("");
-  const navLinks = user?.id ? autherised : unautherised;
 
-  console.log("Navbar render - user:", user);
+  const navLinks = user?.id ? userLinks : guestLinks;
 
   async function handleLogout() {
     if (isLoggingOut) {
@@ -45,51 +65,136 @@ export function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-white/60 bg-[color:var(--surface)]/88 backdrop-blur-xl">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-5 py-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-[color:var(--brand)] text-sm font-bold tracking-[0.28em] text-white shadow-[0_14px_30px_-18px_rgba(210,90,45,0.95)]">
-              TF
-            </span>
-            <span className="flex flex-col">
-              <span className="font-semibold tracking-tight text-slate-950">
-                Tiffin Daily
-              </span>
-              <span className="text-xs text-slate-500">
-                Home-style meals, delivered warm
-              </span>
-            </span>
-          </Link>
-
-          <nav className="flex items-center gap-2 rounded-full border border-[color:var(--border-soft)] bg-white/75 p-1 shadow-[0_16px_40px_-28px_rgba(15,23,42,0.3)]">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-[color:var(--brand-soft)] hover:text-[color:var(--brand-deep)]"
-              >
-                {link.label}
+    <>
+      <header className="sticky top-0 z-40 border-b border-white/45 bg-[rgba(255,251,246,0.72)] backdrop-blur-2xl">
+        <div className="page-shell pb-2">
+          <div className="app-panel px-2 py-2">
+            <div className="flex items-center justify-between gap-2">
+              <Link href="/" className="flex min-w-0 items-center gap-2">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[12px] bg-brand-gradient text-[10px] font-extrabold tracking-[0.24em] text-white shadow-[0_18px_32px_-24px_rgba(21,105,118,0.95)]">
+                  TF
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-[11px] font-extrabold tracking-[-0.03em] text-slate-950">
+                    Tiffin Drift
+                  </span>
+                  <span className="block truncate text-[9px] leading-[1.1] text-slate-500">
+                    Pocket-sized ordering
+                  </span>
+                </span>
               </Link>
-            ))}
+
+              <div className="hidden items-center gap-2 md:flex">
+                <div className="inline-flex items-center gap-1 rounded-full bg-[color:var(--surface-strong)] px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-[color:var(--brand-strong)]">
+                  <Sparkles className="size-3" />
+                  Mobile tuned
+                </div>
+
+                {user?.id ? (
+                  <button
+                    type="button"
+                    onClick={() => void handleLogout()}
+                    disabled={isLoggingOut}
+                    className="inline-flex h-8 items-center gap-1 rounded-full border border-[color:var(--line)] bg-white px-3 text-[10px] font-semibold text-slate-700 transition hover:border-[color:var(--brand)] hover:text-[color:var(--brand-strong)] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    <LogOut className="size-3.5" />
+                    {isLoggingOut ? "Logging out" : "Logout"}
+                  </button>
+                ) : null}
+              </div>
+            </div>
+
+            <div className="mt-2 hidden items-center justify-between gap-2 md:flex">
+              <nav className="flex items-center gap-1 rounded-full border border-[color:var(--line)] bg-white/85 p-1">
+                {navLinks.map((link) => {
+                  const isActive = pathname === link.href;
+
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className={`inline-flex items-center gap-1 rounded-full px-3 py-2 text-[10px] font-semibold transition ${
+                        isActive
+                          ? "bg-[color:var(--brand-strong)] text-white"
+                          : "text-slate-600 hover:bg-[color:var(--brand-soft)] hover:text-[color:var(--brand-strong)]"
+                      }`}
+                    >
+                      <link.icon className="size-3.5" />
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              <Link
+                href="/menu"
+                className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-600 transition hover:text-[color:var(--brand-strong)]"
+              >
+                Quick order
+                <ChevronRight className="size-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {logoutError ? (
+            <p className="px-1 pt-1 text-[10px] leading-[1.15] text-rose-600">
+              {logoutError}
+            </p>
+          ) : null}
+        </div>
+      </header>
+
+      <div className="fixed inset-x-0 bottom-0 z-50 px-2 pb-2 md:hidden">
+        <div className="mx-auto w-full max-w-xl">
+          <nav className="app-panel flex items-center gap-1 rounded-[22px] px-1 py-1 shadow-[0_24px_48px_-34px_rgba(17,35,61,0.75)]">
+            {navLinks.map((link) => {
+              const isActive = pathname === link.href;
+              const Icon = link.icon;
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`nav-justify flex min-w-0 flex-1 items-center gap-2 rounded-[16px] px-1.5 py-2 transition ${
+                    isActive
+                      ? "bg-[color:var(--brand-strong)] text-white shadow-[0_18px_30px_-24px_rgba(20,95,112,0.95)]"
+                      : "text-slate-600"
+                  }`}
+                >
+                  <span className="nav-icon-box inline-flex shrink-0 items-center justify-center rounded-[12px] bg-white/12">
+                    <Icon className="size-3.5" />
+                  </span>
+                  <span className="nav-label truncate text-[9px] font-semibold leading-none">
+                    {link.shortLabel}
+                  </span>
+                </Link>
+              );
+            })}
 
             {user?.id ? (
               <button
                 type="button"
                 onClick={() => void handleLogout()}
                 disabled={isLoggingOut}
-                className="rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-[color:var(--brand-soft)] hover:text-[color:var(--brand-deep)] disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] border border-[color:var(--line)] text-slate-600 transition disabled:cursor-not-allowed disabled:opacity-60"
+                aria-label="Logout"
               >
-                {isLoggingOut ? "Logging out..." : "Logout"}
+                <LogOut className="size-3.5" />
               </button>
             ) : null}
           </nav>
-        </div>
 
-        {logoutError ? (
-          <p className="text-sm text-rose-600">{logoutError}</p>
-        ) : null}
+          <div className="mt-1 flex items-center justify-between px-2">
+            <p className="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+              Band-aware mobile dock
+            </p>
+            <p className="band-270 text-[8px] text-slate-400">270-320</p>
+            <p className="band-321 text-[8px] text-slate-400">321-370</p>
+            <p className="band-371 text-[8px] text-slate-400">371-480</p>
+            <p className="band-481 text-[8px] text-slate-400">481+</p>
+          </div>
+        </div>
       </div>
-    </header>
+    </>
   );
 }
