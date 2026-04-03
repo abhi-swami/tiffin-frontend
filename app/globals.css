@@ -111,6 +111,13 @@
   --nav-justify: center;
   --nav-icon-box: 28px;
   --hero-columns: 1fr;
+  --heading-size: 12.5px;
+  --body-size: 11.5px;
+  --hero-title-size: 14px;
+  --hero-copy-size: 11.5px;
+  --eyebrow-size: 8px;
+  --tiny-size: 10.5px;
+  --micro-size: 9.5px;
 }
 
 @media (min-width: 321px) and (max-width: 370px) {
@@ -123,6 +130,11 @@
     --panel-radius: 17px;
     --nav-label: inline;
     --nav-icon-box: 30px;
+    --heading-size: 13px;
+    --body-size: 11.75px;
+    --hero-title-size: 14.5px;
+    --hero-copy-size: 11.75px;
+    --tiny-size: 10.75px;
   }
 }
 
@@ -139,6 +151,13 @@
     --nav-label: inline;
     --nav-justify: flex-start;
     --nav-icon-box: 31px;
+    --heading-size: 13.25px;
+    --body-size: 12px;
+    --hero-title-size: 15px;
+    --hero-copy-size: 12px;
+    --eyebrow-size: 8.25px;
+    --tiny-size: 11px;
+    --micro-size: 10px;
   }
 }
 
@@ -157,24 +176,38 @@
     --nav-label: inline;
     --nav-justify: flex-start;
     --hero-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    --heading-size: 13.5px;
+    --body-size: 12px;
+    --hero-title-size: 16px;
+    --hero-copy-size: 12px;
+    --eyebrow-size: 8.5px;
+    --tiny-size: 11px;
+    --micro-size: 10px;
   }
 }
 
 @media (min-width: 769px) {
   :root {
     --mobile-nav-offset: 0px;
-    --page-pad-x: 18px;
-    --page-pad-y: 16px;
-    --stack-gap: 14px;
-    --panel-pad: 12px;
-    --hero-pad: 14px;
+    --page-pad-x: 20px;
+    --page-pad-y: 12px;
+    --stack-gap: 10px;
+    --panel-pad: 10px;
+    --hero-pad: 10px;
     --panel-radius: 20px;
-    --shell-width: min(1120px, calc(100vw - 32px));
-    --stat-grid: repeat(4, minmax(0, 1fr));
+    --shell-width: min(1280px, calc(100vw - 40px));
+    --stat-grid: repeat(2, minmax(0, 1fr));
     --feature-grid: repeat(3, minmax(0, 1fr));
     --menu-grid: repeat(2, minmax(0, 1fr));
     --order-grid: repeat(2, minmax(0, 1fr));
-    --hero-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    --hero-columns: minmax(0, 1.2fr) minmax(400px, 0.8fr);
+    --heading-size: 16px;
+    --body-size: 13px;
+    --hero-title-size: 21px;
+    --hero-copy-size: 13px;
+    --eyebrow-size: 10px;
+    --tiny-size: 12px;
+    --micro-size: 11px;
   }
 }
 
@@ -249,14 +282,14 @@
   h4,
   h5,
   h6 {
-    font-size: min(12px, 0.75rem);
+    font-size: var(--heading-size);
     line-height: 1.06;
     letter-spacing: -0.03em;
   }
 
   p {
-    font-size: min(11px, 0.6875rem);
-    line-height: 1.22;
+    font-size: var(--body-size);
+    line-height: 1.28;
   }
 }
 
@@ -266,7 +299,7 @@
     margin-inline: auto;
     padding-inline: var(--page-pad-x);
     padding-top: var(--page-pad-y);
-    padding-bottom: calc(var(--page-pad-y) + var(--mobile-nav-offset));
+    padding-bottom: calc(10px + var(--mobile-nav-offset));
   }
 
   .page-stack {
@@ -320,21 +353,21 @@
   }
 
   .hero-title {
-    font-size: 12px;
-    line-height: 1.05;
+    font-size: var(--hero-title-size);
+    line-height: 1.08;
     font-weight: 800;
     letter-spacing: -0.04em;
   }
 
   .hero-copy {
     max-width: 40rem;
-    font-size: 11px;
-    line-height: 1.22;
+    font-size: var(--hero-copy-size);
+    line-height: 1.3;
     color: color-mix(in srgb, var(--foreground) 72%, white);
   }
 
   .eyebrow {
-    font-size: 8px;
+    font-size: var(--eyebrow-size);
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -342,37 +375,37 @@
   }
 
   .tiny-copy {
-    font-size: 10px;
-    line-height: 1.18;
+    font-size: var(--tiny-size);
+    line-height: 1.24;
   }
 
   .micro-copy {
-    font-size: 9px;
-    line-height: 1.14;
+    font-size: var(--micro-size);
+    line-height: 1.18;
   }
 
   .stat-grid {
     display: grid;
     grid-template-columns: var(--stat-grid);
-    gap: 7px;
+    gap: 8px;
   }
 
   .feature-grid {
     display: grid;
     grid-template-columns: var(--feature-grid);
-    gap: 7px;
+    gap: 8px;
   }
 
   .menu-grid {
     display: grid;
     grid-template-columns: var(--menu-grid);
-    gap: 8px;
+    gap: 9px;
   }
 
   .order-grid {
     display: grid;
     grid-template-columns: var(--order-grid);
-    gap: 8px;
+    gap: 9px;
   }
 
   .mesh-card {
