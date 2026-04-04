@@ -48,11 +48,11 @@ async function fetchOrders(cursor?: NextCursor): Promise<OrdersResponse> {
     throw new Error("NEXT_PUBLIC_BASE_URL is not configured.");
   }
 
-  let url:string = `${baseUrl}/orders`;
-  console.log("Fetching orders with cursor:", baseUrl,url);
+  let url: string = `${baseUrl}/orders`;
+  console.log("Fetching orders with cursor:", baseUrl, url);
 
   if (cursor) {
-    const {lastOrderDate, lastOrderId} = cursor;
+    const { lastOrderDate, lastOrderId } = cursor;
     url += `?lastOrderDate=${encodeURIComponent(lastOrderDate)}&lastOrderId=${encodeURIComponent(lastOrderId)}`;
   }
 
@@ -82,7 +82,7 @@ export default function OrdersPage() {
   const [nextCursor, setNextCursor] = useState<NextCursor | null>(null);
 
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const lastElementRef = useRef<HTMLDivElement | null>(null);
+  const lastElementRef = useRef<HTMLElement | null>(null);
 
   /* ================= LOAD ORDERS ================= */
 
@@ -95,7 +95,7 @@ export default function OrdersPage() {
     try {
       const data = await fetchOrders(nextCursor ?? undefined);
 
-      // ✅ append instead of replace
+      // append instead of replace
       setOrders((prev) => [...prev, ...(data.orders ?? [])]);
 
       setMessage(data.message ?? "Orders");
@@ -145,68 +145,130 @@ export default function OrdersPage() {
       <div className="page-stack">
 
         {/* HEADER */}
-        <div className="app-panel hero-panel">
+        <div className="app-panel hero-panel order-hero">
           <div className="hero-grid">
-            <div>
+            <div className="space-y-2">
               <span className="section-kicker">
                 <ReceiptText className="size-3" />
-                Order history
+                Orders & reorders
               </span>
 
               <h1 className="hero-title text-slate-950">
-                Compact order snapshots.
+                Phone-first history with quicker scanning.
               </h1>
 
               <p className="hero-copy">{heroCopy}</p>
+
+              <div className="order-pill-row">
+                <span className="pill pill-strong">Infinite scroll intact</span>
+                <span className="pill pill-soft">Mobile-first cards</span>
+                <span className="pill pill-outline">Quick glance metadata</span>
+              </div>
             </div>
 
-            <div className="soft-panel">
-              <p className="eyebrow">Orders</p>
-              <h2 className="mt-1 text-[12px] font-extrabold">
-                {orders.length}
-              </h2>
+            <div className="order-hero-stat">
+              <div className="soft-panel">
+                <p className="eyebrow">Loaded so far</p>
+                <h2 className="stat-number">{orders.length}</h2>
+                <p className="micro-copy mt-1 text-ink-soft">
+                  More rows appear as soon as you reach the end.
+                </p>
+              </div>
+
+              <div className="soft-panel">
+                <p className="eyebrow">Latest order</p>
+                <p className="tiny-copy mt-1 text-slate-700">
+                  {orders[0]
+                    ? formatDate(orders[0].order_date)
+                    : "Waiting for your first order"}
+                </p>
+                <p className="micro-copy text-ink-soft">
+                  {hasMore ? "Keep scrolling to fetch older ones." : "You are caught up for now."}
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
         {/* EMPTY STATE */}
         {!orders.length && isInitialized ? (
-          <div className="app-panel text-center">
-            <PackageCheck className="mx-auto size-8" />
-            <h2>No orders yet</h2>
+          <div className="app-panel empty-order">
+            <PackageCheck className="size-8 text-[color:var(--brand-strong)]" />
+            <h2 className="text-[12px] font-extrabold text-slate-950">No orders yet</h2>
+            <p className="tiny-copy text-slate-600">
+              Place your first tiffin and it will show up here instantly.
+            </p>
           </div>
         ) : (
-          <div className="order-grid">
-            {orders.map((order, index) => (
-              <div
-                key={order.id}
-                ref={index === orders.length - 1 ? lastElementRef : null}
-                className="app-panel"
-              >
-                <h3>#{order.id.slice(0, 8)}</h3>
-                <p>{formatDate(order.order_date)}</p>
+          <div className="order-rail">
+            {orders.map((order, index) => {
+              const statusTone = order.payment_status?.toLowerCase() ?? "pending";
+              const statusClass =
+                statusTone === "paid"
+                  ? "order-status is-paid"
+                  : statusTone === "failed"
+                    ? "order-status is-failed"
+                    : "order-status is-pending";
 
-                <div>
-                  {order.tiffin.items.map((item) => (
-                    <div key={item.id}>
-                      <p>{item.name}</p>
-                      <p>
-                        {item.price === null
-                          ? "Included"
-                          : `₹${item.price}`}
-                      </p>
+              return (
+                <article
+                  key={order.id}
+                  ref={index === orders.length - 1 ? lastElementRef : null}
+                  className="app-panel order-card"
+                >
+                  <div className="order-card__head">
+                    <div>
+                      <p className="eyebrow">#{order.id.slice(0, 8)}</p>
+                      <h3 className="order-card__title">{formatDate(order.order_date)}</h3>
                     </div>
-                  ))}
-                </div>
-              </div>
-            ))}
+
+                    <span className={statusClass}>
+                      <span className="status-dot" />
+                      {order.payment_status || "Pending"}
+                    </span>
+                  </div>
+
+                  <div className="order-card__meta">
+                    <div className="meta-chip">
+                      <Clock3 className="size-3" />
+                      <span>{formatDate(order.tiffin.date)}</span>
+                    </div>
+                    <div className="meta-chip">
+                      <PackageCheck className="size-3" />
+                      <span>{order.tiffin.items.length} items</span>
+                    </div>
+                    <div className="meta-chip muted">
+                      <ReceiptText className="size-3" />
+                      <span>Tiffin #{order.tiffin.id}</span>
+                    </div>
+                  </div>
+
+                  <div className="order-items">
+                    {order.tiffin.items.map((item) => (
+                      <div key={item.id} className="order-item">
+                        <div className="min-w-0">
+                          <p className="order-item__title">{item.name}</p>
+                          <p className="order-item__desc">
+                            {item.description || "No description available."}
+                          </p>
+                        </div>
+                        <span className="order-price">
+                          {item.price === null ? "Included" : `₹${item.price}`}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </article>
+              );
+            })}
           </div>
         )}
 
         {/* LOADER */}
         {isLoading && (
-          <div className="app-panel text-center">
-            Loading...
+          <div className="app-panel order-loader">
+            <span className="loader-dot" />
+            <span className="tiny-copy text-slate-700">Loading more orders...</span>
           </div>
         )}
 
