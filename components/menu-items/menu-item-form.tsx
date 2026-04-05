@@ -127,18 +127,7 @@ export function MenuItemForm({
           <p className="tiny-copy mt-1 text-slate-600">{helper}</p>
         </div>
 
-        {mode === "edit" ? (
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={onCancelEdit}
-            className="h-8 rounded-[12px] border-[color:var(--line)] bg-white/80 text-[10px]"
-          >
-            <CircleX className="size-3.5" />
-            Cancel
-          </Button>
-        ) : null}
+        {mode === "edit" ? null : null}
       </div>
 
       <div className="grid gap-2 sm:grid-cols-2">
@@ -224,18 +213,7 @@ export function MenuItemForm({
             {isSubmitting ? (mode === "edit" ? "Saving..." : "Adding...") : mode === "edit" ? "Save changes" : "Add item"}
           </Button>
 
-          {mode === "edit" ? (
-            <Button
-              type="button"
-              size="lg"
-              variant="outline"
-              onClick={onCancelEdit}
-              className="h-9 rounded-[14px] border-[color:var(--line)] bg-white/80 px-4 text-[10px]"
-            >
-              <CircleX className="size-3.5" />
-              Cancel
-            </Button>
-          ) : null}
+          {mode === "edit" ? null : null}
         </div>
       </div>
     </form>
