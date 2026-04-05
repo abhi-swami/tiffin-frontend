@@ -7,6 +7,23 @@ import { MenuItemCard } from "@/components/menu-items/menu-item-card";
 import { MenuItemForm } from "@/components/menu-items/menu-item-form";
 import type { MenuItemPayload, MenuItemRecord } from "@/components/menu-items/types";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { api } from "@/lib/axios";
 
 type ApiMessageResponse = {
@@ -25,6 +42,9 @@ export default function MenuItemsPage() {
   const [feedbackTone, setFeedbackTone] = useState<"success" | "error" | "idle">("idle");
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [deleteItem, setDeleteItem] = useState<MenuItemRecord | null>(null);
 
   useEffect(() => {
     void loadItems();
@@ -53,7 +73,7 @@ export default function MenuItemsPage() {
       const response = await api.get<MenuItemRecord[] | { items: MenuItemRecord[] }>(
         MENU_ITEMS_ENDPOINT
       );
-      console.log("Raw API response for menu items:", response.data.data);
+      console.log("Raw API response for menu items:", response.data);
       setItems(normalizeMenuItems(response.data));
     } catch (caughtError) {
       setItems([]);
@@ -81,6 +101,7 @@ export default function MenuItemsPage() {
       );
       setFeedbackTone("success");
       setActiveItem(null);
+      setEditModalOpen(false);
       await loadItems();
     } catch (caughtError) {
       setFeedback(
@@ -98,9 +119,6 @@ export default function MenuItemsPage() {
   async function handleDelete(item: MenuItemRecord) {
     if (deletingId) return;
 
-    const confirmed = window.confirm(`Delete "${item.name}" from the menu?`);
-    if (!confirmed) return;
-
     setDeletingId(item.id);
     setFeedback("");
     setFeedbackTone("idle");
@@ -111,6 +129,7 @@ export default function MenuItemsPage() {
       setFeedbackTone("success");
       if (activeItem?.id === item.id) {
         setActiveItem(null);
+        setEditModalOpen(false);
       }
       await loadItems();
     } catch (caughtError) {
@@ -118,19 +137,32 @@ export default function MenuItemsPage() {
       setFeedbackTone("error");
     } finally {
       setDeletingId(null);
+      setDeleteItem(null);
     }
   }
 
   function handleEdit(item: MenuItemRecord) {
     setActiveItem(item);
+    setEditModalOpen(true);
     setFeedback("");
     setFeedbackTone("idle");
   }
 
   function handleCancelEdit() {
     setActiveItem(null);
+    setEditModalOpen(false);
     setFeedback("");
     setFeedbackTone("idle");
+  }
+
+  function handleDeleteClick(item: MenuItemRecord) {
+    setDeleteItem(item);
+  }
+
+  function confirmDelete() {
+    if (deleteItem) {
+      void handleDelete(deleteItem);
+    }
   }
 
   return (
@@ -195,7 +227,7 @@ export default function MenuItemsPage() {
                   type="button"
                   size="lg"
                   variant="outline"
-                  onClick={handleCancelEdit}
+                  onClick={() => setCreateModalOpen(true)}
                   className="h-9 rounded-[14px] border-[color:var(--line)] bg-white/80 px-3 text-[10px]"
                 >
                   <Sparkles className="size-3.5" />
@@ -206,15 +238,64 @@ export default function MenuItemsPage() {
           </div>
         </div>
 
-        <MenuItemForm
-          mode={activeItem ? "edit" : "create"}
-          initialItem={activeItem}
-          onSubmit={handleSubmit}
-          onCancelEdit={handleCancelEdit}
-          isSubmitting={isSubmitting}
-          feedback={feedback}
-          feedbackTone={feedbackTone}
-        />
+        <Dialog open={createModalOpen} onOpenChange={(open) => {
+          setCreateModalOpen(open);
+          if (!open) {
+            setFeedback("");
+            setFeedbackTone("idle");
+          }
+        }}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Add New Menu Item</DialogTitle>
+              <DialogDescription>
+                Fill in the details to create a new menu item.
+              </DialogDescription>
+            </DialogHeader>
+            <MenuItemForm
+              mode="create"
+              initialItem={null}
+              onSubmit={(payload) => {
+                handleSubmit(payload).then(() => {
+                  setCreateModalOpen(false);
+                });
+              }}
+              onCancelEdit={() => setCreateModalOpen(false)}
+              isSubmitting={isSubmitting}
+              feedback={feedback}
+              feedbackTone={feedbackTone}
+            />
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={editModalOpen} onOpenChange={(open) => {
+          setEditModalOpen(open);
+          if (!open) {
+            setActiveItem(null);
+            setFeedback("");
+            setFeedbackTone("idle");
+          }
+        }}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit Menu Item</DialogTitle>
+              <DialogDescription>
+                Update the fields and save changes.
+              </DialogDescription>
+            </DialogHeader>
+            {activeItem && (
+              <MenuItemForm
+                mode="edit"
+                initialItem={activeItem}
+                onSubmit={handleSubmit}
+                onCancelEdit={handleCancelEdit}
+                isSubmitting={isSubmitting}
+                feedback={feedback}
+                feedbackTone={feedbackTone}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
 
         <div className="app-panel flex flex-col gap-2">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -270,13 +351,30 @@ export default function MenuItemsPage() {
                 key={item.id}
                 item={item}
                 onEdit={handleEdit}
-                onDelete={handleDelete}
+                onDelete={handleDeleteClick}
                 isDeleting={deletingId === item.id}
               />
             ))}
           </div>
         ) : null}
       </div>
+
+      <AlertDialog open={!!deleteItem} onOpenChange={() => setDeleteItem(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Menu Item</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{deleteItem?.name}"? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </section>
   );
 }
