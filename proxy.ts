@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifySignedRoleCookie } from "./utils/role-cookies";
 
 const PROTECTED_PATHS = ["/orders", "/make-tiffin"];
-const ADMIN_ONLY_PATH = "/make-tiffin";
+const ADMIN_ONLY_PATH = ["/make-tiffin", "/menu-items"];
 const ALLOWED_ADMIN_ROLES = new Set(["1", "2"]);
 
 export async function proxy(request: NextRequest) {
@@ -16,7 +16,11 @@ export async function proxy(request: NextRequest) {
       pathname === protectedPath || pathname.startsWith(`${protectedPath}/`)
   );
 
-  console.log("Middleware check - Path:",role, pathname, "Authenticated:", isAuthenticated);
+  const isAdmainRoute = ADMIN_ONLY_PATH.some(
+    (adminPath) =>
+      pathname === adminPath || pathname.startsWith(`${adminPath}/`)
+  );
+
   if (!isProtectedRoute) {
     return NextResponse.next();
   }
@@ -28,8 +32,7 @@ export async function proxy(request: NextRequest) {
   }
 
   if (
-    (pathname === ADMIN_ONLY_PATH ||
-      pathname.startsWith(`${ADMIN_ONLY_PATH}/`)) &&
+    (isAdmainRoute) &&
     (!role || !ALLOWED_ADMIN_ROLES.has(role))
   ) {
     return NextResponse.redirect(new URL("/", request.url));
@@ -39,5 +42,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [ "/orders/:path*", "/make-tiffin/:path*"],
+  matcher: [ "/orders/:path*", "/make-tiffin/:path*", "/menu-items/:path*"],
 };
