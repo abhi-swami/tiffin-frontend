@@ -364,7 +364,7 @@ export default function MenuItemsPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Menu Item</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{deleteItem?.name}"? This action cannot be undone.
+              `Are you sure you want to delete ${deleteItem?.name} ? This action cannot be undone.`
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

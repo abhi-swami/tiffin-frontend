@@ -7,6 +7,7 @@ const ADMIN_ONLY_PATH = ["/make-tiffin", "/menu-items"];
 const ALLOWED_ADMIN_ROLES = new Set(["1", "2"]);
 
 export async function proxy(request: NextRequest) {
+  console.log("Middleware triggered for path:", request.nextUrl.pathname);
   const pathname = request.nextUrl.pathname;
   const userRoleCookie = request.cookies.get("tiffin.role")?.value;
   const isAuthenticated = request.cookies.has("tiffin.sid");
@@ -30,6 +31,9 @@ export async function proxy(request: NextRequest) {
     loginUrl.searchParams.set("next", pathname);
     return NextResponse.redirect(loginUrl);
   }
+  if(isAuthenticated && (pathname === "/login" || pathname.startsWith("/login/*"))){ 
+    return NextResponse.redirect(new URL("/", request.url));
+  }
 
   if (
     (isAdmainRoute) &&
@@ -42,5 +46,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [ "/orders/:path*", "/make-tiffin/:path*", "/menu-items/:path*"],
+  matcher: [ "/orders/:path*", "/make-tiffin/:path*", "/menu-items/:path*","/login"],
 };

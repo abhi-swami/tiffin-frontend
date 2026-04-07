@@ -3,6 +3,8 @@ import { Manrope, Space_Mono } from "next/font/google";
 import { AuthProvider } from "@/components/auth-provider";
 import { Navbar } from "@/components/navbar";
 import "./globals.css";
+import { cookies } from "next/headers";
+import { verifySignedRoleCookie } from "@/utils/role-cookies";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -20,11 +22,16 @@ export const metadata: Metadata = {
   description: "Fresh tiffin delivery with a mobile-first ordering flow.",
 };
 
-export default function RootLayout({
+export default await async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const cookieStore =await cookies();
+  const roleCookie = cookieStore.get("tiffin.role")?.value;
+
+  const role : string | null = await verifySignedRoleCookie(roleCookie);
+
   return (
     <html
       lang="en"
@@ -33,7 +40,8 @@ export default function RootLayout({
       <body className="min-h-full bg-background text-foreground">
         <AuthProvider>
           <div className="relative flex min-h-full flex-col">
-            <Navbar />
+            <Navbar role={role} />
+
             <main className="flex flex-1 flex-col">{children}</main>
           </div>
         </AuthProvider>

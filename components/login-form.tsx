@@ -62,11 +62,14 @@ export function LoginForm() {
       setOtpRequested(true);
       setFeedbackTone("success");
       setFeedback(
-        response.data.message ?? "OTP sent. Check your phone and enter the code."
+        response.data.message ??
+          "OTP sent. Check your phone and enter the code.",
       );
     } catch (error) {
       setFeedbackTone("error");
-      setFeedback(getErrorMessage(error, "We could not send the OTP right now."));
+      setFeedback(
+        getErrorMessage(error, "We could not send the OTP right now."),
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -77,7 +80,9 @@ export function LoginForm() {
 
     if (!phonePattern.test(cleanPhoneNumber)) {
       setFeedbackTone("error");
-      setFeedback("Phone number looks incomplete. Please review it and try again.");
+      setFeedback(
+        "Phone number looks incomplete. Please review it and try again.",
+      );
       return;
     }
 
@@ -104,17 +109,22 @@ export function LoginForm() {
           },
         },
       );
-
-      await refreshUser();
       setFeedbackTone("success");
-      setFeedback(response.data.message ?? "Phone number verified. Redirecting you home.");
+      setFeedback(
+        response.data.message ?? "Phone number verified. Redirecting you home.",
+      );
 
       startTransition(() => {
-        router.push("/");
+        router.replace("/");
+      });
+      startTransition(() => {
+        router.refresh();
       });
     } catch (error) {
       setFeedbackTone("error");
-      setFeedback(getErrorMessage(error, "OTP verification failed. Please try again."));
+      setFeedback(
+        getErrorMessage(error, "OTP verification failed. Please try again."),
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -134,8 +144,8 @@ export function LoginForm() {
               Login that behaves better on tiny phones.
             </h1>
             <p className="hero-copy">
-              Short labels, cleaner fields, and fewer visual distractions make the
-              flow feel lighter from 270px upward.
+              Short labels, cleaner fields, and fewer visual distractions make
+              the flow feel lighter from 270px upward.
             </p>
           </div>
 
@@ -162,7 +172,9 @@ export function LoginForm() {
               <span className="eyebrow">Phone number</span>
               <div className="flex items-center gap-2 rounded-[14px] border border-[color:var(--line)] bg-[color:var(--surface)] px-3 py-2.5">
                 <Smartphone className="size-3.5 shrink-0 text-[color:var(--brand-strong)]" />
-                <span className="text-[10px] font-semibold text-slate-500">+91</span>
+                <span className="text-[10px] font-semibold text-slate-500">
+                  +91
+                </span>
                 <input
                   type="tel"
                   inputMode="numeric"
@@ -256,7 +268,8 @@ export function LoginForm() {
           <div className="rounded-[14px] bg-white/12 p-2 backdrop-blur-sm">
             <p className="eyebrow text-white/78">270-320px</p>
             <p className="tiny-copy mt-1 text-white/85">
-              Inputs stay stacked, copy stays brief, actions stay thumb friendly.
+              Inputs stay stacked, copy stays brief, actions stay thumb
+              friendly.
             </p>
           </div>
 

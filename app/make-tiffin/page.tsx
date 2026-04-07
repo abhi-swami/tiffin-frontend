@@ -65,7 +65,7 @@ export default function MakeTiffinPage() {
     try {
       const tiffinResponse = await api.get(TIFFIN_ITEMS_ENDPOINT);
       const todaysTiffinItems = normalizeMenuItems(tiffinResponse.data);
-
+      
       if (todaysTiffinItems.length > 0) {
         setItems(todaysTiffinItems);
         setSelectedIds(todaysTiffinItems.map((item) => item.id));
@@ -73,9 +73,11 @@ export default function MakeTiffinPage() {
         setMode("view");
         return;
       }
-
+      
       const menuResponse = await api.get(MENU_ITEMS_ENDPOINT);
-      const menuItems = normalizeMenuItems(menuResponse.data);
+      const menuItems = normalizeMenuItems(menuResponse.data.data);
+      console.log("tiffinResponse", tiffinResponse);
+      console.log("menuResponse", menuResponse);
       setItems(menuItems);
       setSelectedIds([]);
       setActiveTiffinId(null);
