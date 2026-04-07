@@ -36,14 +36,23 @@ const userLinks: NavLink[] = [
   { href: "/profile", label: "Profile", shortLabel: "Profile", icon: UserRound },
 ];
 
-export function Navbar() {
+const adminLinks: NavLink[] = [
+  { href: "/", label: "Home", shortLabel: "Home", icon: Home },
+  { href: "/make-tiffin", label: "Tiffin", shortLabel: "Tiffin", icon: Sparkles },
+  { href: "/menu-items", label: "Menu", shortLabel: "Menu", icon: MenuSquare },
+  { href: "/admin-orders", label: "Orders", shortLabel: "Orders", icon: Package },
+  { href: "/profile", label: "Profile", shortLabel: "Profile", icon: UserRound },
+];
+
+export function Navbar({role}: { role: string | null }) {
+  console.log("Rendering Navbar with role:", role);
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [logoutError, setLogoutError] = useState("");
 
-  const navLinks = user?.id ? userLinks : guestLinks;
+  const navLinks = user?.id ? typeof role === "string" && ["1", "2"].includes(role) ? adminLinks : typeof role === "string" && ["3"].includes(role) ? userLinks : guestLinks : guestLinks;
 
   async function handleLogout() {
     if (isLoggingOut) {

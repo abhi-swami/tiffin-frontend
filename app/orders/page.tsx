@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Clock3, PackageCheck, ReceiptText } from "lucide-react";
+import { Inter } from "next/font/google";
 
 /* ================= TYPES ================= */
 
@@ -94,9 +95,11 @@ export default function OrdersPage() {
 
     try {
       const data = await fetchOrders(nextCursor ?? undefined);
+      console.log("nextCursor before update:", nextCursor);
 
       // append instead of replace
       setOrders((prev) => [...prev, ...(data.orders ?? [])]);
+      console.log("Fetched orders:", data.nextCursor);
 
       setMessage(data.message ?? "Orders");
       setHasMore(data.hasMore ?? false);
@@ -128,7 +131,7 @@ export default function OrdersPage() {
           loadOrders();
         }
       },
-      { threshold: 1 }
+      { threshold: 0.8 }
     );
 
     observerRef.current.observe(lastElementRef.current);
@@ -212,7 +215,7 @@ export default function OrdersPage() {
 
               return (
                 <article
-                  key={order.id}
+                  key={order.id+index}
                   ref={index === orders.length - 1 ? lastElementRef : null}
                   className="app-panel order-card"
                 >
